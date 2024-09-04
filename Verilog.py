@@ -15,12 +15,14 @@ class VerilogParser:
         self.output_file_name = output_file_name
 
     def parse_file(self):
+        parsing_top = 0
         with open(self.input_file_name, 'r') as file:
             for line in file:
                 line = line.strip()
                 if line.startswith('//'):
                     continue
                 elif line.startswith('module'):
+                    parsing_top = 1
                     line = line.strip(',();')
                     words = line.split()
                     self.top_module_name = line.split()[1]
@@ -50,7 +52,11 @@ class VerilogParser:
                     words = line.split()
                     self.assign_dict[words[1]] = words[3] 
                 else:
-                    self.lines.append(line)
+                    if (line == ');') and parsing_top == 1:
+                        parsing_top = 0
+                        continue
+                    else:
+                        self.lines.append(line)
 
     def write_file(self):
         with open(self.output_file_name, 'w') as file:
@@ -76,8 +82,11 @@ class VerilogParser:
 
             for wire_name, bit_length in self.wire_dict.items():
                 if bit_length == "[0:0]":
-                    bit_length = ' '    
+                    bit_length = ''    
                 file.write(f"  wire {bit_length} {wire_name};\n")
+
+            file.write("\n  // module outputs\n")
+
 
             for assign_name, assign_value in self.assign_dict.items():
                 file.write(f"  assign {assign_name} = {assign_value};\n")
@@ -85,6 +94,9 @@ class VerilogParser:
             # Write the rest of the lines
             for line in self.lines:
                 file.write(line + '\n')
+
+    def insert_anchors(self):
+        pass
 
 
 #create a VerilogParser object
