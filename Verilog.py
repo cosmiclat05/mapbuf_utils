@@ -1,4 +1,29 @@
 import re
+import subprocess
+import os
+from blifparser import blifparser
+
+
+def rewriteBlif(inputFile: str, outputFile: str):
+    """
+    Carmine's code (31.05.2024) 
+    """
+    with open(inputFile, "r") as f:
+        lines = f.readlines()
+    with open(outputFile, "w") as f:
+        for line in lines:
+            line = line.strip()
+            if "DFF" in line:
+                # Regex pattern to match the C, D, and Q parts
+                pattern = r"\b(C|D|Q)=([\w\\\[\]:.$]+)"
+                matches = re.findall(pattern, line)
+                clock = matches[0][1]
+                input = matches[1][1]
+                output = matches[2][1]
+                line = ".latch {0} {1} re {2} 3".format(input, output, clock)
+            f.write(line + "\n")
+
+
 
 class VerilogParser:     
     input_file_name = str()
@@ -99,9 +124,30 @@ class VerilogParser:
         pass
 
 
-#create a VerilogParser object
-parser = VerilogParser("fir.v", "modified_fir.v")
+
+
+hdl_dir = "./hdl/"
+filename = "fir.v"
+blif_name = "./yosys_blif_anchor.blif"
+
+module_path = os.path.join(hdl_dir, filename)
+
+parser = VerilogParser(module_path, module_path)
 parser.parse_file()
 parser.write_file()
+
+subprocess.run(["bash", "yosys_run.sh", "./hdl/*.v", blif_name], check=True)
+
+rewriteBlif(blif_name, blif_name)
+
+# get the file path and pass it to the parser
+filepath = os.path.abspath(blif_name)
+parser = blifparser.BlifParser(filepath)
+
+
+
+subprocess.run(["bash", "abc_run.sh", blif_name], check=True)
+
+
 
 
