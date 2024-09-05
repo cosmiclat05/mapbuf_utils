@@ -391,14 +391,14 @@ module fir(
   wire [31:0] mem_controller1_storeData;
 
   // module outputs
-  assign out0 = cond_br2_falseOut;
-  assign out0_valid = cond_br2_falseOut_valid;
+  assign out0 = cond_br2_falseOut_anchors_out;
+  assign out0_valid = cond_br2_falseOut_valid_anchors_out;
   assign cond_br2_falseOut_ready = out0_ready;
-  assign di_end_valid = mem_controller1_memEnd_valid;
+  assign di_end_valid = mem_controller1_memEnd_valid_anchors_out;
   assign mem_controller1_memEnd_ready = di_end_ready;
-  assign idx_end_valid = mem_controller0_memEnd_valid;
+  assign idx_end_valid = mem_controller0_memEnd_valid_anchors_out;
   assign mem_controller0_memEnd_ready = idx_end_ready;
-  assign end_valid = fork0_outs_1_valid;
+  assign end_valid = fork0_outs_1_valid_anchors_out;
   assign fork0_outs_1_ready = end_ready;
   assign di_loadEn = mem_controller1_loadEn;
   assign di_loadAddr = mem_controller1_loadAddr;
@@ -410,7 +410,6 @@ module fir(
   assign idx_storeEn = mem_controller0_storeEn;
   assign idx_storeAddr = mem_controller0_storeAddr;
   assign idx_storeData = mem_controller0_storeData;
-
 
 
 fork_dataless #(.SIZE(3)) fork0(
@@ -432,17 +431,17 @@ mem_controller_storeless #(.NUM_LOADS(1), .DATA_TYPE(32), .ADDR_TYPE(32)) mem_co
 .ldData ({mem_controller0_ldData_0_anchors_out}),
 .ldData_ready ({mem_controller0_ldData_0_anchors_out_ready}),
 .ldData_valid ({mem_controller0_ldData_0_anchors_out_valid}),
-.loadAddr (mem_controller0_memEnd_ready_anchors_out),
+.loadAddr (mem_controller0_loadAddr),
 .loadData (idx_loadData),
-.loadEn (mem_controller0_memEnd_ready_anchors_out),
+.loadEn (mem_controller0_loadEn),
 .memEnd_ready (mem_controller0_memEnd_ready_anchors_out),
 .memEnd_valid (mem_controller0_memEnd_valid_anchors_out),
 .memStart_ready (idx_start_ready),
 .memStart_valid (idx_start_valid),
 .rst (rst),
-.storeAddr (mem_controller0_memEnd_ready_anchors_out),
-.storeData (mem_controller0_memEnd_ready_anchors_out),
-.storeEn (mem_controller0_memEnd_ready_anchors_out)
+.storeAddr (mem_controller0_storeAddr),
+.storeData (mem_controller0_storeData),
+.storeEn (mem_controller0_storeEn)
 );
 
 mem_controller_storeless #(.NUM_LOADS(1), .DATA_TYPE(32), .ADDR_TYPE(32)) mem_controller1(
@@ -455,17 +454,17 @@ mem_controller_storeless #(.NUM_LOADS(1), .DATA_TYPE(32), .ADDR_TYPE(32)) mem_co
 .ldData ({mem_controller1_ldData_0_anchors_out}),
 .ldData_ready ({mem_controller1_ldData_0_anchors_out_ready}),
 .ldData_valid ({mem_controller1_ldData_0_anchors_out_valid}),
-.loadAddr (mem_controller1_memEnd_ready_anchors_out),
+.loadAddr (mem_controller1_loadAddr),
 .loadData (di_loadData),
-.loadEn (mem_controller1_memEnd_ready_anchors_out),
+.loadEn (mem_controller1_loadEn),
 .memEnd_ready (mem_controller1_memEnd_ready_anchors_out),
 .memEnd_valid (mem_controller1_memEnd_valid_anchors_out),
 .memStart_ready (di_start_ready),
 .memStart_valid (di_start_valid),
 .rst (rst),
-.storeAddr (mem_controller1_memEnd_ready_anchors_out),
-.storeData (mem_controller1_memEnd_ready_anchors_out),
-.storeEn (mem_controller1_memEnd_ready_anchors_out)
+.storeAddr (mem_controller1_storeAddr),
+.storeData (mem_controller1_storeData),
+.storeEn (mem_controller1_storeEn)
 );
 
 handshake_constant_0 #(.DATA_WIDTH(1)) constant0(

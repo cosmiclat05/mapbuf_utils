@@ -123,31 +123,59 @@ class VerilogParser:
     def insert_anchors(self):
         wires_to_delete = list()
         for wire_name in list(self.wire_dict.keys()):
-            if wire_name.endswith(('valid', 'ready', 'data')):
+            if wire_name.endswith('valid') or wire_name.endswith('ready'):
                 anchor_in = wire_name + '_anchors_in'
                 anchor_out = wire_name + '_anchors_out'
                 self.input_dict[anchor_in] = self.wire_dict[wire_name]
                 self.output_dict[anchor_out] = self.wire_dict[wire_name]
                 wires_to_delete.append(wire_name)
             elif wire_name + '_valid' in self.wire_dict or wire_name + '_ready' in self.wire_dict:
-                    anchor_in = wire_name + '_anchors_in'
-                    anchor_out = wire_name + '_anchors_out'
-                    self.input_dict[anchor_in] = self.wire_dict[wire_name]
-                    self.output_dict[anchor_out] = self.wire_dict[wire_name]
-                    wires_to_delete.append(wire_name)
+                anchor_in = wire_name + '_anchors_in'
+                anchor_out = wire_name + '_anchors_out'
+                self.input_dict[anchor_in] = self.wire_dict[wire_name]
+                self.output_dict[anchor_out] = self.wire_dict[wire_name]
+                wires_to_delete.append(wire_name)
             else:
                 continue
 
+            input_keywords = ('ins', 'ctrl', 'condition', 'data', 'lhs', 'rhs', 'dataFromMem', 'addrIn')
+            output_keywords = ('outs', 'result', 'falseOut', 'trueOut', 'addrOut', 'dataOut')
             for i, line in enumerate(self.lines):
-                if wire_name in line:
-                    if ('ins' in line) or ('ctrl' in line):
-                        self.lines[i] = line.replace(wire_name, anchor_in)
-                    elif 'outs' in line or 'Out':
-                        self.lines[i] = line.replace(wire_name, anchor_out)
+                if ('mc_load' in line) or ('mc_support' in line):
+                    continue
+                if re.search(r'\b{}\b(?!_)'.format(re.escape(wire_name)), line):
+                    words = line.split() 
+                    if any(keyword in words[0] for keyword in input_keywords):
+                        if wire_name.endswith('ready'):
+                            self.lines[i] = line.replace(wire_name, anchor_out)
+                        else:
+                            self.lines[i] = line.replace(wire_name, anchor_in)
+                        
+                    elif any(keyword in words[0] for keyword in output_keywords):
+                            if wire_name.endswith('ready'):
+                                self.lines[i] = line.replace(wire_name, anchor_in)
+                            else:
+                                self.lines[i] = line.replace(wire_name, anchor_out)
+                    elif ('index' in words[0]):
+                        if ('control_merge' in line):
+                            if wire_name.endswith('ready'):
+                                self.lines[i] = line.replace(wire_name, anchor_in)
+                            else:
+                                self.lines[i] = line.replace(wire_name, anchor_out)
+                        else:
+                            if wire_name.endswith('ready'):
+                                self.lines[i] = line.replace(wire_name, anchor_out)
+                            else:
+                                self.lines[i] = line.replace(wire_name, anchor_in)
 
-            for key, value in self.assign_dict:
+
+
+            for key, value in self.assign_dict.items():
                 if value == wire_name:
-                    self.assign_dict[key] = anchor_out
+                    if wire_name.endswith('ready'):
+                        self.assign_dict[key] = anchor_in
+                    else:
+                        self.assign_dict[key] = anchor_out
 
 
         for wire_name in wires_to_delete:
@@ -155,25 +183,25 @@ class VerilogParser:
 
 
 
-hdl_dir = "./hdl/"
-filename = "fir.v"
+hdl_dir = "./"
+filename = "fir_no_touch.v"
 module_path = os.path.join(hdl_dir, filename)
 
-parser = VerilogParser(module_path, "./anchored_fir.v")
+parser = VerilogParser(module_path, "./hdl/fir.v")
 parser.parse_file()
 parser.insert_anchors()
 parser.write_file()
 
-# blif_name = "./yosys_blif_anchor.blif"
-# subprocess.run(["bash", "yosys_run.sh", "./hdl/*.v", blif_name], check=True)
+blif_name = "./yosys_blif_anchor.blif"
+subprocess.run(["bash", "yosys_run.sh", "./hdl/*.v", blif_name], check=True)
 
-# rewriteBlif(blif_name, blif_name)
+rewriteBlif(blif_name, blif_name)
 
-# # get the file path and pass it to the parser
-# filepath = os.path.abspath(blif_name)
-# parser = blifparser.BlifParser(filepath)
+# get the file path and pass it to the parser
+filepath = os.path.abspath(blif_name)
+#parser = blifparser.BlifParser(filepath)
 
-# subprocess.run(["bash", "abc_run.sh", blif_name], check=True)
+subprocess.run(["bash", "abc_run.sh", blif_name], check=True)
 
 
 

@@ -391,14 +391,14 @@ module fir(
   wire [31:0] mem_controller1_storeData;
 
   // module outputs
-  assign out0 = cond_br2_falseOut;
-  assign out0_valid = cond_br2_falseOut_valid;
+  assign out0 = cond_br2_falseOut_anchors_out;
+  assign out0_valid = cond_br2_falseOut_valid_anchors_out;
   assign cond_br2_falseOut_ready = out0_ready;
-  assign di_end_valid = mem_controller1_memEnd_valid;
+  assign di_end_valid = mem_controller1_memEnd_valid_anchors_out;
   assign mem_controller1_memEnd_ready = di_end_ready;
-  assign idx_end_valid = mem_controller0_memEnd_valid;
+  assign idx_end_valid = mem_controller0_memEnd_valid_anchors_out;
   assign mem_controller0_memEnd_ready = idx_end_ready;
-  assign end_valid = fork0_outs_1_valid;
+  assign end_valid = fork0_outs_1_valid_anchors_out;
   assign fork0_outs_1_ready = end_ready;
   assign di_loadEn = mem_controller1_loadEn;
   assign di_loadAddr = mem_controller1_loadAddr;
@@ -416,230 +416,230 @@ fork_dataless #(.SIZE(3)) fork0(
 .clk (clk),
 .ins_ready (start_ready),
 .ins_valid (start_valid),
-.outs_ready ({fork0_outs_2_ready_anchors_out, fork0_outs_1_ready_anchors_out, fork0_outs_0_ready_anchors_out}),
+.outs_ready ({fork0_outs_2_ready_anchors_in, fork0_outs_1_ready_anchors_in, fork0_outs_0_ready_anchors_in}),
 .outs_valid ({fork0_outs_2_valid_anchors_out, fork0_outs_1_valid_anchors_out, fork0_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 mem_controller_storeless #(.NUM_LOADS(1), .DATA_TYPE(32), .ADDR_TYPE(32)) mem_controller0(
 .clk (clk),
-.ctrlEnd_ready (fork6_outs_0_ready_anchors_in),
+.ctrlEnd_ready (fork6_outs_0_ready_anchors_out),
 .ctrlEnd_valid (fork6_outs_0_valid_anchors_in),
-.ldAddr ({mc_load0_addrOut_anchors_out}),
-.ldAddr_ready ({mc_load0_addrOut_anchors_out_ready}),
-.ldAddr_valid ({mc_load0_addrOut_anchors_out_valid}),
-.ldData ({mem_controller0_ldData_0_anchors_out}),
-.ldData_ready ({mem_controller0_ldData_0_anchors_out_ready}),
-.ldData_valid ({mem_controller0_ldData_0_anchors_out_valid}),
-.loadAddr (mem_controller0_memEnd_ready_anchors_out),
+.ldAddr ({mc_load0_addrOut}),
+.ldAddr_ready ({mc_load0_addrOut_ready}),
+.ldAddr_valid ({mc_load0_addrOut_valid}),
+.ldData ({mem_controller0_ldData_0}),
+.ldData_ready ({mem_controller0_ldData_0_ready}),
+.ldData_valid ({mem_controller0_ldData_0_valid}),
+.loadAddr (mem_controller0_loadAddr),
 .loadData (idx_loadData),
-.loadEn (mem_controller0_memEnd_ready_anchors_out),
-.memEnd_ready (mem_controller0_memEnd_ready_anchors_out),
-.memEnd_valid (mem_controller0_memEnd_valid_anchors_out),
+.loadEn (mem_controller0_loadEn),
+.memEnd_ready (mem_controller0_memEnd_ready),
+.memEnd_valid (mem_controller0_memEnd_valid),
 .memStart_ready (idx_start_ready),
 .memStart_valid (idx_start_valid),
 .rst (rst),
-.storeAddr (mem_controller0_memEnd_ready_anchors_out),
-.storeData (mem_controller0_memEnd_ready_anchors_out),
-.storeEn (mem_controller0_memEnd_ready_anchors_out)
+.storeAddr (mem_controller0_storeAddr),
+.storeData (mem_controller0_storeData),
+.storeEn (mem_controller0_storeEn)
 );
 
 mem_controller_storeless #(.NUM_LOADS(1), .DATA_TYPE(32), .ADDR_TYPE(32)) mem_controller1(
 .clk (clk),
-.ctrlEnd_ready (fork6_outs_1_ready_anchors_in),
+.ctrlEnd_ready (fork6_outs_1_ready_anchors_out),
 .ctrlEnd_valid (fork6_outs_1_valid_anchors_in),
-.ldAddr ({mc_load1_addrOut_anchors_out}),
-.ldAddr_ready ({mc_load1_addrOut_anchors_out_ready}),
-.ldAddr_valid ({mc_load1_addrOut_anchors_out_valid}),
-.ldData ({mem_controller1_ldData_0_anchors_out}),
-.ldData_ready ({mem_controller1_ldData_0_anchors_out_ready}),
-.ldData_valid ({mem_controller1_ldData_0_anchors_out_valid}),
-.loadAddr (mem_controller1_memEnd_ready_anchors_out),
+.ldAddr ({mc_load1_addrOut}),
+.ldAddr_ready ({mc_load1_addrOut_ready}),
+.ldAddr_valid ({mc_load1_addrOut_valid}),
+.ldData ({mem_controller1_ldData_0}),
+.ldData_ready ({mem_controller1_ldData_0_ready}),
+.ldData_valid ({mem_controller1_ldData_0_valid}),
+.loadAddr (mem_controller1_loadAddr),
 .loadData (di_loadData),
-.loadEn (mem_controller1_memEnd_ready_anchors_out),
-.memEnd_ready (mem_controller1_memEnd_ready_anchors_out),
-.memEnd_valid (mem_controller1_memEnd_valid_anchors_out),
+.loadEn (mem_controller1_loadEn),
+.memEnd_ready (mem_controller1_memEnd_ready),
+.memEnd_valid (mem_controller1_memEnd_valid),
 .memStart_ready (di_start_ready),
 .memStart_valid (di_start_valid),
 .rst (rst),
-.storeAddr (mem_controller1_memEnd_ready_anchors_out),
-.storeData (mem_controller1_memEnd_ready_anchors_out),
-.storeEn (mem_controller1_memEnd_ready_anchors_out)
+.storeAddr (mem_controller1_storeAddr),
+.storeData (mem_controller1_storeData),
+.storeEn (mem_controller1_storeEn)
 );
 
 handshake_constant_0 #(.DATA_WIDTH(1)) constant0(
 .clk (clk),
-.ctrl_ready (fork0_outs_0_ready_anchors_in),
+.ctrl_ready (fork0_outs_0_ready_anchors_out),
 .ctrl_valid (fork0_outs_0_valid_anchors_in),
 .outs (constant0_outs_anchors_out),
-.outs_ready (constant0_outs_anchors_out_ready),
-.outs_valid (constant0_outs_anchors_out_valid),
+.outs_ready (constant0_outs_ready_anchors_in),
+.outs_valid (constant0_outs_valid_anchors_out),
 .rst (rst)
 );
 
 fork_type #(.SIZE(2), .DATA_TYPE(1)) fork1(
 .clk (clk),
 .ins (constant0_outs_anchors_in),
-.ins_ready (constant0_outs_anchors_in_ready),
-.ins_valid (constant0_outs_anchors_in_valid),
+.ins_ready (constant0_outs_ready_anchors_out),
+.ins_valid (constant0_outs_valid_anchors_in),
 .outs ({fork1_outs_1_anchors_out, fork1_outs_0_anchors_out}),
-.outs_ready ({fork1_outs_1_anchors_out_ready, fork1_outs_0_anchors_out_ready}),
-.outs_valid ({fork1_outs_1_anchors_out_valid, fork1_outs_0_anchors_out_valid}),
+.outs_ready ({fork1_outs_1_ready_anchors_in, fork1_outs_0_ready_anchors_in}),
+.outs_valid ({fork1_outs_1_valid_anchors_out, fork1_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(1), .OUTPUT_TYPE(11)) extsi5(
 .clk (clk),
 .ins (fork1_outs_0_anchors_in),
-.ins_ready (fork1_outs_0_anchors_in_ready),
-.ins_valid (fork1_outs_0_anchors_in_valid),
+.ins_ready (fork1_outs_0_ready_anchors_out),
+.ins_valid (fork1_outs_0_valid_anchors_in),
 .outs (extsi5_outs_anchors_out),
-.outs_ready (extsi5_outs_anchors_out_ready),
-.outs_valid (extsi5_outs_anchors_out_valid),
+.outs_ready (extsi5_outs_ready_anchors_in),
+.outs_valid (extsi5_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(1), .OUTPUT_TYPE(32)) extsi6(
 .clk (clk),
 .ins (fork1_outs_1_anchors_in),
-.ins_ready (fork1_outs_1_anchors_in_ready),
-.ins_valid (fork1_outs_1_anchors_in_valid),
+.ins_ready (fork1_outs_1_ready_anchors_out),
+.ins_valid (fork1_outs_1_valid_anchors_in),
 .outs (extsi6_outs_anchors_out),
-.outs_ready (extsi6_outs_anchors_out_ready),
-.outs_valid (extsi6_outs_anchors_out_valid),
+.outs_ready (extsi6_outs_ready_anchors_in),
+.outs_valid (extsi6_outs_valid_anchors_out),
 .rst (rst)
 );
 
 oehb #(.DATA_TYPE(11)) buffer0(
 .clk (clk),
 .ins (cond_br0_trueOut_anchors_in),
-.ins_ready (cond_br0_trueOut_anchors_in_ready),
-.ins_valid (cond_br0_trueOut_anchors_in_valid),
+.ins_ready (cond_br0_trueOut_ready_anchors_out),
+.ins_valid (cond_br0_trueOut_valid_anchors_in),
 .outs (buffer0_outs_anchors_out),
-.outs_ready (buffer0_outs_anchors_out_ready),
-.outs_valid (buffer0_outs_anchors_out_valid),
+.outs_ready (buffer0_outs_ready_anchors_in),
+.outs_valid (buffer0_outs_valid_anchors_out),
 .rst (rst)
 );
 
 tehb #(.DATA_TYPE(11)) buffer1(
 .clk (clk),
 .ins (buffer0_outs_anchors_in),
-.ins_ready (buffer0_outs_anchors_in_ready),
-.ins_valid (buffer0_outs_anchors_in_valid),
+.ins_ready (buffer0_outs_ready_anchors_out),
+.ins_valid (buffer0_outs_valid_anchors_in),
 .outs (buffer1_outs_anchors_out),
-.outs_ready (buffer1_outs_anchors_out_ready),
-.outs_valid (buffer1_outs_anchors_out_valid),
+.outs_ready (buffer1_outs_ready_anchors_in),
+.outs_valid (buffer1_outs_valid_anchors_out),
 .rst (rst)
 );
 
 mux #(.SIZE(2), .DATA_TYPE(11), .SELECT_TYPE(1)) mux2(
 .clk (clk),
-.index (fork3_outs_0_anchors_out),
-.index_ready (fork3_outs_0_anchors_out_ready),
-.index_valid (fork3_outs_0_anchors_out_valid),
+.index (fork3_outs_0_anchors_in),
+.index_ready (fork3_outs_0_ready_anchors_out),
+.index_valid (fork3_outs_0_valid_anchors_in),
 .ins ({buffer1_outs_anchors_in, extsi5_outs_anchors_in}),
-.ins_ready ({buffer1_outs_anchors_in_ready, extsi5_outs_anchors_in_ready}),
-.ins_valid ({buffer1_outs_anchors_in_valid, extsi5_outs_anchors_in_valid}),
+.ins_ready ({buffer1_outs_ready_anchors_out, extsi5_outs_ready_anchors_out}),
+.ins_valid ({buffer1_outs_valid_anchors_in, extsi5_outs_valid_anchors_in}),
 .outs (mux2_outs_anchors_out),
-.outs_ready (mux2_outs_anchors_out_ready),
-.outs_valid (mux2_outs_anchors_out_valid),
+.outs_ready (mux2_outs_ready_anchors_in),
+.outs_valid (mux2_outs_valid_anchors_out),
 .rst (rst)
 );
 
 fork_type #(.SIZE(3), .DATA_TYPE(11)) fork2(
 .clk (clk),
 .ins (mux2_outs_anchors_in),
-.ins_ready (mux2_outs_anchors_in_ready),
-.ins_valid (mux2_outs_anchors_in_valid),
+.ins_ready (mux2_outs_ready_anchors_out),
+.ins_valid (mux2_outs_valid_anchors_in),
 .outs ({fork2_outs_2_anchors_out, fork2_outs_1_anchors_out, fork2_outs_0_anchors_out}),
-.outs_ready ({fork2_outs_2_anchors_out_ready, fork2_outs_1_anchors_out_ready, fork2_outs_0_anchors_out_ready}),
-.outs_valid ({fork2_outs_2_anchors_out_valid, fork2_outs_1_anchors_out_valid, fork2_outs_0_anchors_out_valid}),
+.outs_ready ({fork2_outs_2_ready_anchors_in, fork2_outs_1_ready_anchors_in, fork2_outs_0_ready_anchors_in}),
+.outs_valid ({fork2_outs_2_valid_anchors_out, fork2_outs_1_valid_anchors_out, fork2_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(11), .OUTPUT_TYPE(12)) extsi7(
 .clk (clk),
 .ins (fork2_outs_0_anchors_in),
-.ins_ready (fork2_outs_0_anchors_in_ready),
-.ins_valid (fork2_outs_0_anchors_in_valid),
+.ins_ready (fork2_outs_0_ready_anchors_out),
+.ins_valid (fork2_outs_0_valid_anchors_in),
 .outs (extsi7_outs_anchors_out),
-.outs_ready (extsi7_outs_anchors_out_ready),
-.outs_valid (extsi7_outs_anchors_out_valid),
+.outs_ready (extsi7_outs_ready_anchors_in),
+.outs_valid (extsi7_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(11), .OUTPUT_TYPE(12)) extsi8(
 .clk (clk),
 .ins (fork2_outs_1_anchors_in),
-.ins_ready (fork2_outs_1_anchors_in_ready),
-.ins_valid (fork2_outs_1_anchors_in_valid),
+.ins_ready (fork2_outs_1_ready_anchors_out),
+.ins_valid (fork2_outs_1_valid_anchors_in),
 .outs (extsi8_outs_anchors_out),
-.outs_ready (extsi8_outs_anchors_out_ready),
-.outs_valid (extsi8_outs_anchors_out_valid),
+.outs_ready (extsi8_outs_ready_anchors_in),
+.outs_valid (extsi8_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(11), .OUTPUT_TYPE(32)) extsi9(
 .clk (clk),
 .ins (fork2_outs_2_anchors_in),
-.ins_ready (fork2_outs_2_anchors_in_ready),
-.ins_valid (fork2_outs_2_anchors_in_valid),
+.ins_ready (fork2_outs_2_ready_anchors_out),
+.ins_valid (fork2_outs_2_valid_anchors_in),
 .outs (extsi9_outs_anchors_out),
-.outs_ready (extsi9_outs_anchors_out_ready),
-.outs_valid (extsi9_outs_anchors_out_valid),
+.outs_ready (extsi9_outs_ready_anchors_in),
+.outs_valid (extsi9_outs_valid_anchors_out),
 .rst (rst)
 );
 
 oehb #(.DATA_TYPE(32)) buffer2(
 .clk (clk),
 .ins (cond_br2_trueOut_anchors_in),
-.ins_ready (cond_br2_trueOut_anchors_in_ready),
-.ins_valid (cond_br2_trueOut_anchors_in_valid),
+.ins_ready (cond_br2_trueOut_ready_anchors_out),
+.ins_valid (cond_br2_trueOut_valid_anchors_in),
 .outs (buffer2_outs_anchors_out),
-.outs_ready (buffer2_outs_anchors_out_ready),
-.outs_valid (buffer2_outs_anchors_out_valid),
+.outs_ready (buffer2_outs_ready_anchors_in),
+.outs_valid (buffer2_outs_valid_anchors_out),
 .rst (rst)
 );
 
 tehb #(.DATA_TYPE(32)) buffer3(
 .clk (clk),
 .ins (buffer2_outs_anchors_in),
-.ins_ready (buffer2_outs_anchors_in_ready),
-.ins_valid (buffer2_outs_anchors_in_valid),
+.ins_ready (buffer2_outs_ready_anchors_out),
+.ins_valid (buffer2_outs_valid_anchors_in),
 .outs (buffer3_outs_anchors_out),
-.outs_ready (buffer3_outs_anchors_out_ready),
-.outs_valid (buffer3_outs_anchors_out_valid),
+.outs_ready (buffer3_outs_ready_anchors_in),
+.outs_valid (buffer3_outs_valid_anchors_out),
 .rst (rst)
 );
 
 mux #(.SIZE(2), .DATA_TYPE(32), .SELECT_TYPE(1)) mux1(
 .clk (clk),
-.index (fork3_outs_1_anchors_out),
-.index_ready (fork3_outs_1_anchors_out_ready),
-.index_valid (fork3_outs_1_anchors_out_valid),
+.index (fork3_outs_1_anchors_in),
+.index_ready (fork3_outs_1_ready_anchors_out),
+.index_valid (fork3_outs_1_valid_anchors_in),
 .ins ({buffer3_outs_anchors_in, extsi6_outs_anchors_in}),
-.ins_ready ({buffer3_outs_anchors_in_ready, extsi6_outs_anchors_in_ready}),
-.ins_valid ({buffer3_outs_anchors_in_valid, extsi6_outs_anchors_in_valid}),
+.ins_ready ({buffer3_outs_ready_anchors_out, extsi6_outs_ready_anchors_out}),
+.ins_valid ({buffer3_outs_valid_anchors_in, extsi6_outs_valid_anchors_in}),
 .outs (mux1_outs_anchors_out),
-.outs_ready (mux1_outs_anchors_out_ready),
-.outs_valid (mux1_outs_anchors_out_valid),
+.outs_ready (mux1_outs_ready_anchors_in),
+.outs_valid (mux1_outs_valid_anchors_out),
 .rst (rst)
 );
 
 oehb_dataless buffer4(
 .clk (clk),
-.ins_ready (cond_br3_trueOut_ready_anchors_in),
+.ins_ready (cond_br3_trueOut_ready_anchors_out),
 .ins_valid (cond_br3_trueOut_valid_anchors_in),
-.outs_ready (buffer4_outs_ready_anchors_out),
+.outs_ready (buffer4_outs_ready_anchors_in),
 .outs_valid (buffer4_outs_valid_anchors_out),
 .rst (rst)
 );
 
 tehb_dataless buffer5(
 .clk (clk),
-.ins_ready (buffer4_outs_ready_anchors_in),
+.ins_ready (buffer4_outs_ready_anchors_out),
 .ins_valid (buffer4_outs_valid_anchors_in),
-.outs_ready (buffer5_outs_ready_anchors_out),
+.outs_ready (buffer5_outs_ready_anchors_in),
 .outs_valid (buffer5_outs_valid_anchors_out),
 .rst (rst)
 );
@@ -647,11 +647,11 @@ tehb_dataless buffer5(
 control_merge_dataless #(.SIZE(2), .INDEX_TYPE(1)) control_merge0(
 .clk (clk),
 .index (control_merge0_index_anchors_out),
-.index_ready (control_merge0_index_anchors_out_ready),
-.index_valid (control_merge0_index_anchors_out_valid),
-.ins_ready ({buffer5_outs_ready_anchors_in, fork0_outs_2_ready_anchors_in}),
+.index_ready (control_merge0_index_ready_anchors_in),
+.index_valid (control_merge0_index_valid_anchors_out),
+.ins_ready ({buffer5_outs_ready_anchors_out, fork0_outs_2_ready_anchors_out}),
 .ins_valid ({buffer5_outs_valid_anchors_in, fork0_outs_2_valid_anchors_in}),
-.outs_ready (control_merge0_outs_ready_anchors_out),
+.outs_ready (control_merge0_outs_ready_anchors_in),
 .outs_valid (control_merge0_outs_valid_anchors_out),
 .rst (rst)
 );
@@ -659,307 +659,307 @@ control_merge_dataless #(.SIZE(2), .INDEX_TYPE(1)) control_merge0(
 fork_type #(.SIZE(2), .DATA_TYPE(1)) fork3(
 .clk (clk),
 .ins (control_merge0_index_anchors_in),
-.ins_ready (control_merge0_index_anchors_in_ready),
-.ins_valid (control_merge0_index_anchors_in_valid),
+.ins_ready (control_merge0_index_ready_anchors_out),
+.ins_valid (control_merge0_index_valid_anchors_in),
 .outs ({fork3_outs_1_anchors_out, fork3_outs_0_anchors_out}),
-.outs_ready ({fork3_outs_1_anchors_out_ready, fork3_outs_0_anchors_out_ready}),
-.outs_valid ({fork3_outs_1_anchors_out_valid, fork3_outs_0_anchors_out_valid}),
+.outs_ready ({fork3_outs_1_ready_anchors_in, fork3_outs_0_ready_anchors_in}),
+.outs_valid ({fork3_outs_1_valid_anchors_out, fork3_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 source source0(
 .clk (clk),
-.outs_ready (source0_outs_ready_anchors_out),
+.outs_ready (source0_outs_ready_anchors_in),
 .outs_valid (source0_outs_valid_anchors_out),
 .rst (rst)
 );
 
 handshake_constant_1 #(.DATA_WIDTH(11)) constant1(
 .clk (clk),
-.ctrl_ready (source0_outs_ready_anchors_in),
+.ctrl_ready (source0_outs_ready_anchors_out),
 .ctrl_valid (source0_outs_valid_anchors_in),
 .outs (constant1_outs_anchors_out),
-.outs_ready (constant1_outs_anchors_out_ready),
-.outs_valid (constant1_outs_anchors_out_valid),
+.outs_ready (constant1_outs_ready_anchors_in),
+.outs_valid (constant1_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(11), .OUTPUT_TYPE(12)) extsi10(
 .clk (clk),
 .ins (constant1_outs_anchors_in),
-.ins_ready (constant1_outs_anchors_in_ready),
-.ins_valid (constant1_outs_anchors_in_valid),
+.ins_ready (constant1_outs_ready_anchors_out),
+.ins_valid (constant1_outs_valid_anchors_in),
 .outs (extsi10_outs_anchors_out),
-.outs_ready (extsi10_outs_anchors_out_ready),
-.outs_valid (extsi10_outs_anchors_out_valid),
+.outs_ready (extsi10_outs_ready_anchors_in),
+.outs_valid (extsi10_outs_valid_anchors_out),
 .rst (rst)
 );
 
 source source1(
 .clk (clk),
-.outs_ready (source1_outs_ready_anchors_out),
+.outs_ready (source1_outs_ready_anchors_in),
 .outs_valid (source1_outs_valid_anchors_out),
 .rst (rst)
 );
 
 handshake_constant_2 #(.DATA_WIDTH(11)) constant4(
 .clk (clk),
-.ctrl_ready (source1_outs_ready_anchors_in),
+.ctrl_ready (source1_outs_ready_anchors_out),
 .ctrl_valid (source1_outs_valid_anchors_in),
 .outs (constant4_outs_anchors_out),
-.outs_ready (constant4_outs_anchors_out_ready),
-.outs_valid (constant4_outs_anchors_out_valid),
+.outs_ready (constant4_outs_ready_anchors_in),
+.outs_valid (constant4_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(11), .OUTPUT_TYPE(12)) extsi11(
 .clk (clk),
 .ins (constant4_outs_anchors_in),
-.ins_ready (constant4_outs_anchors_in_ready),
-.ins_valid (constant4_outs_anchors_in_valid),
+.ins_ready (constant4_outs_ready_anchors_out),
+.ins_valid (constant4_outs_valid_anchors_in),
 .outs (extsi11_outs_anchors_out),
-.outs_ready (extsi11_outs_anchors_out_ready),
-.outs_valid (extsi11_outs_anchors_out_valid),
+.outs_ready (extsi11_outs_ready_anchors_in),
+.outs_valid (extsi11_outs_valid_anchors_out),
 .rst (rst)
 );
 
 source source2(
 .clk (clk),
-.outs_ready (source2_outs_ready_anchors_out),
+.outs_ready (source2_outs_ready_anchors_in),
 .outs_valid (source2_outs_valid_anchors_out),
 .rst (rst)
 );
 
 handshake_constant_3 #(.DATA_WIDTH(2)) constant8(
 .clk (clk),
-.ctrl_ready (source2_outs_ready_anchors_in),
+.ctrl_ready (source2_outs_ready_anchors_out),
 .ctrl_valid (source2_outs_valid_anchors_in),
 .outs (constant8_outs_anchors_out),
-.outs_ready (constant8_outs_anchors_out_ready),
-.outs_valid (constant8_outs_anchors_out_valid),
+.outs_ready (constant8_outs_ready_anchors_in),
+.outs_valid (constant8_outs_valid_anchors_out),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(2), .OUTPUT_TYPE(12)) extsi12(
 .clk (clk),
 .ins (constant8_outs_anchors_in),
-.ins_ready (constant8_outs_anchors_in_ready),
-.ins_valid (constant8_outs_anchors_in_valid),
+.ins_ready (constant8_outs_ready_anchors_out),
+.ins_valid (constant8_outs_valid_anchors_in),
 .outs (extsi12_outs_anchors_out),
-.outs_ready (extsi12_outs_anchors_out_ready),
-.outs_valid (extsi12_outs_anchors_out_valid),
+.outs_ready (extsi12_outs_ready_anchors_in),
+.outs_valid (extsi12_outs_valid_anchors_out),
 .rst (rst)
 );
 
 mc_load #(.DATA_TYPE(32), .ADDR_TYPE(32)) mc_load0(
-.addrIn (extsi9_outs_anchors_out),
-.addrIn_ready (extsi9_outs_anchors_out_ready),
-.addrIn_valid (extsi9_outs_anchors_out_valid),
-.addrOut (mc_load0_addrOut_anchors_out),
-.addrOut_ready (mc_load0_addrOut_anchors_out_ready),
-.addrOut_valid (mc_load0_addrOut_anchors_out_valid),
+.addrIn (extsi9_outs_anchors_in),
+.addrIn_ready (extsi9_outs_ready_anchors_out),
+.addrIn_valid (extsi9_outs_valid_anchors_in),
+.addrOut (mc_load0_addrOut),
+.addrOut_ready (mc_load0_addrOut_ready),
+.addrOut_valid (mc_load0_addrOut_valid),
 .clk (clk),
-.dataFromMem (mem_controller0_ldData_0_anchors_out),
-.dataFromMem_ready (mem_controller0_ldData_0_anchors_out_ready),
-.dataFromMem_valid (mem_controller0_ldData_0_anchors_out_valid),
-.dataOut (mc_load0_dataOut_anchors_out),
-.dataOut_ready (mc_load0_dataOut_anchors_out_ready),
-.dataOut_valid (mc_load0_dataOut_anchors_out_valid),
+.dataFromMem (mem_controller0_ldData_0_anchors_in),
+.dataFromMem_ready (mem_controller0_ldData_0_ready_anchors_out),
+.dataFromMem_valid (mem_controller0_ldData_0_valid_anchors_in),
+.dataOut (mc_load0_dataOut),
+.dataOut_ready (mc_load0_dataOut_ready),
+.dataOut_valid (mc_load0_dataOut_valid),
 .rst (rst)
 );
 
 subi #(.DATA_TYPE(12)) subi1(
 .clk (clk),
-.lhs (extsi10_outs_anchors_out),
-.lhs_ready (extsi10_outs_anchors_out_ready),
-.lhs_valid (extsi10_outs_anchors_out_valid),
+.lhs (extsi10_outs_anchors_in),
+.lhs_ready (extsi10_outs_ready_anchors_out),
+.lhs_valid (extsi10_outs_valid_anchors_in),
 .result (subi1_result_anchors_out),
-.result_ready (subi1_result_anchors_out_ready),
-.result_valid (subi1_result_anchors_out_valid),
-.rhs (extsi8_outs_anchors_out),
-.rhs_ready (extsi8_outs_anchors_out_ready),
-.rhs_valid (extsi8_outs_anchors_out_valid),
+.result_ready (subi1_result_ready_anchors_in),
+.result_valid (subi1_result_valid_anchors_out),
+.rhs (extsi8_outs_anchors_in),
+.rhs_ready (extsi8_outs_ready_anchors_out),
+.rhs_valid (extsi8_outs_valid_anchors_in),
 .rst (rst)
 );
 
 extsi #(.INPUT_TYPE(12), .OUTPUT_TYPE(32)) extsi13(
 .clk (clk),
 .ins (subi1_result_anchors_in),
-.ins_ready (subi1_result_anchors_in_ready),
-.ins_valid (subi1_result_anchors_in_valid),
+.ins_ready (subi1_result_ready_anchors_out),
+.ins_valid (subi1_result_valid_anchors_in),
 .outs (extsi13_outs_anchors_out),
-.outs_ready (extsi13_outs_anchors_out_ready),
-.outs_valid (extsi13_outs_anchors_out_valid),
+.outs_ready (extsi13_outs_ready_anchors_in),
+.outs_valid (extsi13_outs_valid_anchors_out),
 .rst (rst)
 );
 
 mc_load #(.DATA_TYPE(32), .ADDR_TYPE(32)) mc_load1(
-.addrIn (extsi13_outs_anchors_out),
-.addrIn_ready (extsi13_outs_anchors_out_ready),
-.addrIn_valid (extsi13_outs_anchors_out_valid),
-.addrOut (mc_load1_addrOut_anchors_out),
-.addrOut_ready (mc_load1_addrOut_anchors_out_ready),
-.addrOut_valid (mc_load1_addrOut_anchors_out_valid),
+.addrIn (extsi13_outs_anchors_in),
+.addrIn_ready (extsi13_outs_ready_anchors_out),
+.addrIn_valid (extsi13_outs_valid_anchors_in),
+.addrOut (mc_load1_addrOut),
+.addrOut_ready (mc_load1_addrOut_ready),
+.addrOut_valid (mc_load1_addrOut_valid),
 .clk (clk),
-.dataFromMem (mem_controller1_ldData_0_anchors_out),
-.dataFromMem_ready (mem_controller1_ldData_0_anchors_out_ready),
-.dataFromMem_valid (mem_controller1_ldData_0_anchors_out_valid),
-.dataOut (mc_load1_dataOut_anchors_out),
-.dataOut_ready (mc_load1_dataOut_anchors_out_ready),
-.dataOut_valid (mc_load1_dataOut_anchors_out_valid),
+.dataFromMem (mem_controller1_ldData_0_anchors_in),
+.dataFromMem_ready (mem_controller1_ldData_0_ready_anchors_out),
+.dataFromMem_valid (mem_controller1_ldData_0_valid_anchors_in),
+.dataOut (mc_load1_dataOut),
+.dataOut_ready (mc_load1_dataOut_ready),
+.dataOut_valid (mc_load1_dataOut_valid),
 .rst (rst)
 );
 
 muli #(.DATA_TYPE(32)) muli0(
 .clk (clk),
-.lhs (mc_load0_dataOut_anchors_out),
-.lhs_ready (mc_load0_dataOut_anchors_out_ready),
-.lhs_valid (mc_load0_dataOut_anchors_out_valid),
+.lhs (mc_load0_dataOut),
+.lhs_ready (mc_load0_dataOut_ready),
+.lhs_valid (mc_load0_dataOut_valid),
 .result (muli0_result_anchors_out),
-.result_ready (muli0_result_anchors_out_ready),
-.result_valid (muli0_result_anchors_out_valid),
-.rhs (mc_load1_dataOut_anchors_out),
-.rhs_ready (mc_load1_dataOut_anchors_out_ready),
-.rhs_valid (mc_load1_dataOut_anchors_out_valid),
+.result_ready (muli0_result_ready_anchors_in),
+.result_valid (muli0_result_valid_anchors_out),
+.rhs (mc_load1_dataOut),
+.rhs_ready (mc_load1_dataOut_ready),
+.rhs_valid (mc_load1_dataOut_valid),
 .rst (rst)
 );
 
 addi #(.DATA_TYPE(32)) addi0(
 .clk (clk),
-.lhs (mux1_outs_anchors_out),
-.lhs_ready (mux1_outs_anchors_out_ready),
-.lhs_valid (mux1_outs_anchors_out_valid),
+.lhs (mux1_outs_anchors_in),
+.lhs_ready (mux1_outs_ready_anchors_out),
+.lhs_valid (mux1_outs_valid_anchors_in),
 .result (addi0_result_anchors_out),
-.result_ready (addi0_result_anchors_out_ready),
-.result_valid (addi0_result_anchors_out_valid),
-.rhs (muli0_result_anchors_out),
-.rhs_ready (muli0_result_anchors_out_ready),
-.rhs_valid (muli0_result_anchors_out_valid),
+.result_ready (addi0_result_ready_anchors_in),
+.result_valid (addi0_result_valid_anchors_out),
+.rhs (muli0_result_anchors_in),
+.rhs_ready (muli0_result_ready_anchors_out),
+.rhs_valid (muli0_result_valid_anchors_in),
 .rst (rst)
 );
 
 addi #(.DATA_TYPE(12)) addi1(
 .clk (clk),
-.lhs (extsi7_outs_anchors_out),
-.lhs_ready (extsi7_outs_anchors_out_ready),
-.lhs_valid (extsi7_outs_anchors_out_valid),
+.lhs (extsi7_outs_anchors_in),
+.lhs_ready (extsi7_outs_ready_anchors_out),
+.lhs_valid (extsi7_outs_valid_anchors_in),
 .result (addi1_result_anchors_out),
-.result_ready (addi1_result_anchors_out_ready),
-.result_valid (addi1_result_anchors_out_valid),
-.rhs (extsi12_outs_anchors_out),
-.rhs_ready (extsi12_outs_anchors_out_ready),
-.rhs_valid (extsi12_outs_anchors_out_valid),
+.result_ready (addi1_result_ready_anchors_in),
+.result_valid (addi1_result_valid_anchors_out),
+.rhs (extsi12_outs_anchors_in),
+.rhs_ready (extsi12_outs_ready_anchors_out),
+.rhs_valid (extsi12_outs_valid_anchors_in),
 .rst (rst)
 );
 
 fork_type #(.SIZE(2), .DATA_TYPE(12)) fork4(
 .clk (clk),
 .ins (addi1_result_anchors_in),
-.ins_ready (addi1_result_anchors_in_ready),
-.ins_valid (addi1_result_anchors_in_valid),
+.ins_ready (addi1_result_ready_anchors_out),
+.ins_valid (addi1_result_valid_anchors_in),
 .outs ({fork4_outs_1_anchors_out, fork4_outs_0_anchors_out}),
-.outs_ready ({fork4_outs_1_anchors_out_ready, fork4_outs_0_anchors_out_ready}),
-.outs_valid ({fork4_outs_1_anchors_out_valid, fork4_outs_0_anchors_out_valid}),
+.outs_ready ({fork4_outs_1_ready_anchors_in, fork4_outs_0_ready_anchors_in}),
+.outs_valid ({fork4_outs_1_valid_anchors_out, fork4_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 trunci #(.INPUT_TYPE(12), .OUTPUT_TYPE(11)) trunci0(
 .clk (clk),
 .ins (fork4_outs_0_anchors_in),
-.ins_ready (fork4_outs_0_anchors_in_ready),
-.ins_valid (fork4_outs_0_anchors_in_valid),
+.ins_ready (fork4_outs_0_ready_anchors_out),
+.ins_valid (fork4_outs_0_valid_anchors_in),
 .outs (trunci0_outs_anchors_out),
-.outs_ready (trunci0_outs_anchors_out_ready),
-.outs_valid (trunci0_outs_anchors_out_valid),
+.outs_ready (trunci0_outs_ready_anchors_in),
+.outs_valid (trunci0_outs_valid_anchors_out),
 .rst (rst)
 );
 
 handshake_cmpi_0 #(.DATA_TYPE(12)) cmpi1(
 .clk (clk),
-.lhs (fork4_outs_1_anchors_out),
-.lhs_ready (fork4_outs_1_anchors_out_ready),
-.lhs_valid (fork4_outs_1_anchors_out_valid),
+.lhs (fork4_outs_1_anchors_in),
+.lhs_ready (fork4_outs_1_ready_anchors_out),
+.lhs_valid (fork4_outs_1_valid_anchors_in),
 .result (cmpi1_result_anchors_out),
-.result_ready (cmpi1_result_anchors_out_ready),
-.result_valid (cmpi1_result_anchors_out_valid),
-.rhs (extsi11_outs_anchors_out),
-.rhs_ready (extsi11_outs_anchors_out_ready),
-.rhs_valid (extsi11_outs_anchors_out_valid),
+.result_ready (cmpi1_result_ready_anchors_in),
+.result_valid (cmpi1_result_valid_anchors_out),
+.rhs (extsi11_outs_anchors_in),
+.rhs_ready (extsi11_outs_ready_anchors_out),
+.rhs_valid (extsi11_outs_valid_anchors_in),
 .rst (rst)
 );
 
 fork_type #(.SIZE(3), .DATA_TYPE(1)) fork5(
 .clk (clk),
 .ins (cmpi1_result_anchors_in),
-.ins_ready (cmpi1_result_anchors_in_ready),
-.ins_valid (cmpi1_result_anchors_in_valid),
+.ins_ready (cmpi1_result_ready_anchors_out),
+.ins_valid (cmpi1_result_valid_anchors_in),
 .outs ({fork5_outs_2_anchors_out, fork5_outs_1_anchors_out, fork5_outs_0_anchors_out}),
-.outs_ready ({fork5_outs_2_anchors_out_ready, fork5_outs_1_anchors_out_ready, fork5_outs_0_anchors_out_ready}),
-.outs_valid ({fork5_outs_2_anchors_out_valid, fork5_outs_1_anchors_out_valid, fork5_outs_0_anchors_out_valid}),
+.outs_ready ({fork5_outs_2_ready_anchors_in, fork5_outs_1_ready_anchors_in, fork5_outs_0_ready_anchors_in}),
+.outs_valid ({fork5_outs_2_valid_anchors_out, fork5_outs_1_valid_anchors_out, fork5_outs_0_valid_anchors_out}),
 .rst (rst)
 );
 
 cond_br #(.DATA_TYPE(11)) cond_br0(
 .clk (clk),
-.condition (fork5_outs_0_anchors_out),
-.condition_ready (fork5_outs_0_anchors_out_ready),
-.condition_valid (fork5_outs_0_anchors_out_valid),
-.data (trunci0_outs_anchors_out),
-.data_ready (trunci0_outs_anchors_out_ready),
-.data_valid (trunci0_outs_anchors_out_valid),
+.condition (fork5_outs_0_anchors_in),
+.condition_ready (fork5_outs_0_ready_anchors_out),
+.condition_valid (fork5_outs_0_valid_anchors_in),
+.data (trunci0_outs_anchors_in),
+.data_ready (trunci0_outs_ready_anchors_out),
+.data_valid (trunci0_outs_valid_anchors_in),
 .falseOut (cond_br0_falseOut_anchors_out),
-.falseOut_ready (cond_br0_falseOut_anchors_out_ready),
-.falseOut_valid (cond_br0_falseOut_anchors_out_valid),
+.falseOut_ready (cond_br0_falseOut_ready_anchors_in),
+.falseOut_valid (cond_br0_falseOut_valid_anchors_out),
 .rst (rst),
 .trueOut (cond_br0_trueOut_anchors_out),
-.trueOut_ready (cond_br0_trueOut_anchors_out_ready),
-.trueOut_valid (cond_br0_trueOut_anchors_out_valid)
+.trueOut_ready (cond_br0_trueOut_ready_anchors_in),
+.trueOut_valid (cond_br0_trueOut_valid_anchors_out)
 );
 
 sink #(.DATA_TYPE(11)) sink0(
 .clk (clk),
 .ins (cond_br0_falseOut_anchors_in),
-.ins_ready (cond_br0_falseOut_anchors_in_ready),
-.ins_valid (cond_br0_falseOut_anchors_in_valid),
+.ins_ready (cond_br0_falseOut_ready_anchors_out),
+.ins_valid (cond_br0_falseOut_valid_anchors_in),
 .rst (rst)
 );
 
 cond_br #(.DATA_TYPE(32)) cond_br2(
 .clk (clk),
-.condition (fork5_outs_1_anchors_out),
-.condition_ready (fork5_outs_1_anchors_out_ready),
-.condition_valid (fork5_outs_1_anchors_out_valid),
-.data (addi0_result_anchors_out),
-.data_ready (addi0_result_anchors_out_ready),
-.data_valid (addi0_result_anchors_out_valid),
+.condition (fork5_outs_1_anchors_in),
+.condition_ready (fork5_outs_1_ready_anchors_out),
+.condition_valid (fork5_outs_1_valid_anchors_in),
+.data (addi0_result_anchors_in),
+.data_ready (addi0_result_ready_anchors_out),
+.data_valid (addi0_result_valid_anchors_in),
 .falseOut (cond_br2_falseOut_anchors_out),
-.falseOut_ready (cond_br2_falseOut_anchors_out_ready),
-.falseOut_valid (cond_br2_falseOut_anchors_out_valid),
+.falseOut_ready (cond_br2_falseOut_ready_anchors_in),
+.falseOut_valid (cond_br2_falseOut_valid_anchors_out),
 .rst (rst),
 .trueOut (cond_br2_trueOut_anchors_out),
-.trueOut_ready (cond_br2_trueOut_anchors_out_ready),
-.trueOut_valid (cond_br2_trueOut_anchors_out_valid)
+.trueOut_ready (cond_br2_trueOut_ready_anchors_in),
+.trueOut_valid (cond_br2_trueOut_valid_anchors_out)
 );
 
 cond_br_dataless cond_br3(
 .clk (clk),
-.condition (fork5_outs_2_anchors_out),
-.condition_ready (fork5_outs_2_anchors_out_ready),
-.condition_valid (fork5_outs_2_anchors_out_valid),
+.condition (fork5_outs_2_anchors_in),
+.condition_ready (fork5_outs_2_ready_anchors_out),
+.condition_valid (fork5_outs_2_valid_anchors_in),
 .data_ready (control_merge0_outs_ready_anchors_out),
-.data_valid (control_merge0_outs_valid_anchors_out),
-.falseOut_ready (cond_br3_falseOut_ready_anchors_out),
+.data_valid (control_merge0_outs_valid_anchors_in),
+.falseOut_ready (cond_br3_falseOut_ready_anchors_in),
 .falseOut_valid (cond_br3_falseOut_valid_anchors_out),
 .rst (rst),
-.trueOut_ready (cond_br3_trueOut_ready_anchors_out),
+.trueOut_ready (cond_br3_trueOut_ready_anchors_in),
 .trueOut_valid (cond_br3_trueOut_valid_anchors_out)
 );
 
 fork_dataless #(.SIZE(2)) fork6(
 .clk (clk),
-.ins_ready (cond_br3_falseOut_ready_anchors_in),
+.ins_ready (cond_br3_falseOut_ready_anchors_out),
 .ins_valid (cond_br3_falseOut_valid_anchors_in),
-.outs_ready ({fork6_outs_1_ready_anchors_out, fork6_outs_0_ready_anchors_out}),
+.outs_ready ({fork6_outs_1_ready_anchors_in, fork6_outs_0_ready_anchors_in}),
 .outs_valid ({fork6_outs_1_valid_anchors_out, fork6_outs_0_valid_anchors_out}),
 .rst (rst)
 );
