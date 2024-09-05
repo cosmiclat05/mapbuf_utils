@@ -112,7 +112,6 @@ class VerilogParser:
 
             file.write("\n  // module outputs\n")
 
-
             for assign_name, assign_value in self.assign_dict.items():
                 file.write(f"  assign {assign_name} = {assign_value};\n")
 
@@ -120,33 +119,61 @@ class VerilogParser:
             for line in self.lines:
                 file.write(line + '\n')
 
-    def insert_anchors(self):
-        pass
 
+    def insert_anchors(self):
+        wires_to_delete = list()
+        for wire_name in list(self.wire_dict.keys()):
+            if wire_name.endswith(('valid', 'ready', 'data')):
+                anchor_in = wire_name + '_anchors_in'
+                anchor_out = wire_name + '_anchors_out'
+                self.input_dict[anchor_in] = self.wire_dict[wire_name]
+                self.output_dict[anchor_out] = self.wire_dict[wire_name]
+                wires_to_delete.append(wire_name)
+            elif wire_name + '_valid' in self.wire_dict or wire_name + '_ready' in self.wire_dict:
+                    anchor_in = wire_name + '_anchors_in'
+                    anchor_out = wire_name + '_anchors_out'
+                    self.input_dict[anchor_in] = self.wire_dict[wire_name]
+                    self.output_dict[anchor_out] = self.wire_dict[wire_name]
+                    wires_to_delete.append(wire_name)
+            else:
+                continue
+
+            for i, line in enumerate(self.lines):
+                if wire_name in line:
+                    if ('ins' in line) or ('ctrl' in line):
+                        self.lines[i] = line.replace(wire_name, anchor_in)
+                    elif 'outs' in line or 'Out':
+                        self.lines[i] = line.replace(wire_name, anchor_out)
+
+            for key, value in self.assign_dict:
+                if value == wire_name:
+                    self.assign_dict[key] = anchor_out
+
+
+        for wire_name in wires_to_delete:
+            del self.wire_dict[wire_name]
 
 
 
 hdl_dir = "./hdl/"
 filename = "fir.v"
-blif_name = "./yosys_blif_anchor.blif"
-
 module_path = os.path.join(hdl_dir, filename)
 
-parser = VerilogParser(module_path, module_path)
+parser = VerilogParser(module_path, "./anchored_fir.v")
 parser.parse_file()
+parser.insert_anchors()
 parser.write_file()
 
-subprocess.run(["bash", "yosys_run.sh", "./hdl/*.v", blif_name], check=True)
+# blif_name = "./yosys_blif_anchor.blif"
+# subprocess.run(["bash", "yosys_run.sh", "./hdl/*.v", blif_name], check=True)
 
-rewriteBlif(blif_name, blif_name)
+# rewriteBlif(blif_name, blif_name)
 
-# get the file path and pass it to the parser
-filepath = os.path.abspath(blif_name)
-parser = blifparser.BlifParser(filepath)
+# # get the file path and pass it to the parser
+# filepath = os.path.abspath(blif_name)
+# parser = blifparser.BlifParser(filepath)
 
-
-
-subprocess.run(["bash", "abc_run.sh", blif_name], check=True)
+# subprocess.run(["bash", "abc_run.sh", blif_name], check=True)
 
 
 
