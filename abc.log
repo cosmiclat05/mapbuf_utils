@@ -1,0 +1,3 @@
+ABC command line: "read_blif ./abc_outputs/abc_result.blif; strash; if -K 6; ps;".
+
+[1;37mfir                           :[0m i/o =  963/ 1125  lat =  336  nd =  2489  edge =   7470  aig  = 13476  lev = 11
