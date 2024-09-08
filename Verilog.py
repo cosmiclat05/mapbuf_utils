@@ -131,7 +131,13 @@ class VerilogParser:
     def insert_anchors(self):
         wires_to_delete = list()
         for wire_name in list(self.wire_dict.keys()):
-            if wire_name.endswith('valid') or wire_name.endswith('ready'):
+            if wire_name.endswith('valid'):
+                anchor_in = wire_name + f'{self.anchor_prefix}anchors_in'
+                anchor_out = wire_name + f'{self.anchor_prefix}anchors_out'
+                self.input_dict[anchor_in] = self.wire_dict[wire_name]
+                self.output_dict[anchor_out] = self.wire_dict[wire_name]
+                wires_to_delete.append(wire_name)
+            elif wire_name.endswith('ready'):
                 anchor_in = wire_name + f'{self.anchor_prefix}anchors_in'
                 anchor_out = wire_name + f'{self.anchor_prefix}anchors_out'
                 self.input_dict[anchor_in] = self.wire_dict[wire_name]
@@ -257,5 +263,8 @@ def main():
     
     write_cuts(cuts, f"./cuts.txt")
 
+    for n, cut_list in cuts.items():
+        print(n)
+        print(cut_list)
 if __name__ == '__main__':
     main()

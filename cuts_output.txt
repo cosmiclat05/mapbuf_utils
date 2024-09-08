@@ -1,0 +1,98 @@
+Node: fork1_outs_0_valid
+  Cut #0:
+    fork1.control.regBlock[0].regblock.transmitValue
+    constant0_outs_valid
+  Cut #1:
+    fork1.control.regBlock[0].regblock.transmitValue
+    constant0_outs_valid
+
+Node: constant0_outs_valid
+  Cut #0:
+    fork0_outs_0_valid
+
+Node: fork0_outs_0_valid
+  Cut #0:
+    fork0.regBlock[0].regblock.transmitValue
+    start_valid
+  Cut #1:
+    fork0.regBlock[0].regblock.transmitValue
+    start_valid
+
+Node: new_n3120
+  Cut #0:
+    fork3_outs_0_valid
+    fork3_outs_0
+    buffer1_outs_valid
+  Cut #1:
+    buffer1.control.fullReg
+    buffer0.control.outputValid
+    control_merge0_index
+    fork3.control.regBlock[0].regblock.transmitValue
+    control_merge0_index_valid
+
+Node: fork3_outs_0
+  Cut #0:
+    control_merge0_index
+
+Node: fork3_outs_0_valid
+  Cut #0:
+    fork3.control.regBlock[0].regblock.transmitValue
+    control_merge0_index_valid
+  Cut #1:
+    fork3.control.regBlock[0].regblock.transmitValue
+    control_merge0_index_valid
+
+Node: buffer1_outs_valid
+  Cut #0:
+    buffer0_outs_valid
+    buffer1.control.fullReg
+  Cut #1:
+    buffer0_outs_valid
+    buffer1.control.fullReg
+
+Node: buffer0_outs_valid
+  Cut #0:
+    buffer0.control.outputValid
+
+Node: extsi5_outs[0]
+  Cut #0:
+    fork1_outs_0
+
+Node: fork1_outs_0
+  Cut #0:
+    constant0_outs
+
+Node: extsi12_outs[0]
+  Cut #0:
+    constant8_outs[0]
+
+Node: idx_start_ready
+  Cut #0:
+    mem_controller0.control.memIdle
+
+Node: di_start_ready
+  Cut #0:
+    mem_controller1.control.memIdle
+
+Node: buffer0_outs[0]
+  Cut #0:
+    buffer0.outs[0]
+
+Node: end_valid
+  Cut #0:
+    fork0.regBlock[1].regblock.transmitValue
+    start_valid
+  Cut #1:
+    fork0.regBlock[1].regblock.transmitValue
+    start_valid
+
+Node: buffer1_outs[0]
+  Cut #0:
+    buffer0_outs[0]
+    buffer1.control.fullReg
+    buffer1.dataReg[0]
+  Cut #1:
+    buffer0_outs[0]
+    buffer1.control.fullReg
+    buffer1.dataReg[0]
+
